@@ -29,13 +29,19 @@ extern SPI_HandleTypeDef SSD1351_SPI;
 #define SSD1351_WRITE_RAM 0x5C
 
 void SSD1351_Select();
+
 void SSD1351_Deselect();
 
 void SSD1351_Init();
 
 void SSD1351_DrawPixel(uint8_t x, uint8_t y, uint16_t color);
+
 void SSD1351_FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
+
 void SSD1351_FillScreen(uint16_t color);
+
 void SSD1351_Clear();
+
+void SSD1351_DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint16_t color);
 
 #endif // SSD1351_H

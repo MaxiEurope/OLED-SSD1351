@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "main.h" // include the main header file from the MCU project
 #include "ssd1351.h"
 
@@ -101,4 +102,41 @@ void SSD1351_FillScreen(uint16_t color) {
 
 void SSD1351_Clear() {
     SSD1351_FillScreen(0);
+}
+
+void SSD1351_DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint16_t color) {
+    if (x0 >= SSD1351_WIDTH || y0 >= SSD1351_HEIGHT || x1 >= SSD1351_WIDTH || y1 >= SSD1351_HEIGHT) {
+        return;
+    }
+
+    if (x0 == x1 && y0 == y1) {
+        SSD1351_DrawPixel(x0, y0, color);
+        return;
+    }
+
+    int dx = abs(x1 - x0);
+    int dy = abs(y1 - y0);
+    int sx = x0 < x1 ? 1 : -1;
+    int sy = y0 < y1 ? 1 : -1;
+    int err = dx - dy;
+
+    while (1) {
+        SSD1351_DrawPixel(x0, y0, color);
+
+        if (x0 == x1 && y0 == y1) {
+            break;
+        }
+
+        int e2 = err * 2;
+
+        if (e2 > -dy) {
+            err -= dy;
+            x0 += sx;
+        }
+
+        if (e2 < dx) {
+            err += dx;
+            y0 += sy;
+        }
+    }
 }
