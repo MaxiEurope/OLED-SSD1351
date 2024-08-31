@@ -94,3 +94,11 @@ void SSD1351_FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color
 
     SSD1351_Deselect();
 }
+
+void SSD1351_FillScreen(uint16_t color) {
+    SSD1351_FillRect(0, 0, SSD1351_WIDTH, SSD1351_HEIGHT, color);
+}
+
+void SSD1351_Clear() {
+    SSD1351_FillScreen(0);
+}
