@@ -140,3 +140,26 @@ void SSD1351_DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint16_t c
         }
     }
 }
+
+void SSD1351_DrawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color) {
+    if (x >= SSD1351_WIDTH || y >= SSD1351_HEIGHT) {
+        return;
+    }
+
+    if ((x + w) >= SSD1351_WIDTH) {
+        w = SSD1351_WIDTH - x - 1;
+    }
+
+    if ((y + h) >= SSD1351_HEIGHT) {
+        h = SSD1351_HEIGHT - y - 1;
+    }
+
+    if (w == 0 || h == 0) {
+       return;
+    }
+
+    SSD1351_DrawLine(x, y, x + w, y, color);
+    SSD1351_DrawLine(x + w, y, x + w, y + h, color);
+    SSD1351_DrawLine(x + w, y + h, x, y + h, color);
+    SSD1351_DrawLine(x, y + h, x, y, color);
+}
