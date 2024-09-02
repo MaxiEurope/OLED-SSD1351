@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include "main.h" // include the main header file from the MCU project
 #include "ssd1351.h"
+#include "fonts.h"
+
+SSD1351_FONT current_font;
 
 void SSD1351_Select() {
     HAL_GPIO_WritePin(SSD1351_CS_PORT, SSD1351_CS_PIN, GPIO_PIN_RESET);
@@ -162,4 +165,11 @@ void SSD1351_DrawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color
     SSD1351_DrawLine(x + w, y, x + w, y + h, color);
     SSD1351_DrawLine(x + w, y + h, x, y + h, color);
     SSD1351_DrawLine(x, y + h, x, y, color);
+}
+
+void SSD1351_SetFont(const uint8_t* font) {
+    current_font.data = font;
+    current_font.height = font[6];
+    current_font.start_char = font[2] + (font[3] << 8);
+    current_font.end_char = font[4] + (font[5] << 8);
 }

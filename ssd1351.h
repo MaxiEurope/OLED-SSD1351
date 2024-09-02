@@ -28,6 +28,16 @@ extern SPI_HandleTypeDef SSD1351_SPI;
 #define SSD1351_SET_ROW 0x75
 #define SSD1351_WRITE_RAM 0x5C
 
+/* Font structure */
+typedef struct {
+    const uint8_t *data;
+    uint8_t height;
+    uint8_t start_char;
+    uint8_t end_char;
+} SSD1351_FONT;
+
+extern SSD1351_FONT current_font;
+
 void SSD1351_Select();
 
 void SSD1351_Deselect();
@@ -45,5 +55,7 @@ void SSD1351_Clear();
 void SSD1351_DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint16_t color);
 
 void SSD1351_DrawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
+
+void SSD1351_SetFont(const uint8_t* font);
 
 #endif // SSD1351_H
