@@ -173,3 +173,28 @@ void SSD1351_SetFont(const uint8_t* font) {
     current_font.start_char = font[2] + (font[3] << 8);
     current_font.end_char = font[4] + (font[5] << 8);
 }
+
+void SSD1351_DrawChar(uint8_t x, uint8_t y, char c, uint16_t color, uint16_t bg) {
+    if (c < current_font.start_char || c > current_font.end_char) {
+        return;
+    }
+
+    uint16_t tmp = (c - current_font.start_char) << 2;
+    const uint8_t *char_table = current_font.data + 8 + tmp;
+    uint8_t char_width = *char_table;
+    uint32_t offset = (uint32_t)char_table[1] | ((uint32_t)char_table[2] << 8) | ((uint32_t)char_table[3] << 16);
+    const uint8_t *char_bitmap = current_font.data + offset;
+
+    for (uint8_t ycount = 0; ycount < current_font.height; ycount++) {
+        uint8_t temp = 0;
+        uint8_t mask = 0;
+        for (uint8_t xcount = 0; xcount < char_width; xcount++) {
+            if (!mask) {
+                temp = *char_bitmap++;
+                mask = 0x01;
+            }
+            SSD1351_DrawPixel(x + xcount, y + ycount, (temp & mask) ? color : bg);
+            mask <<= 1;
+        }
+    }
+}

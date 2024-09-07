@@ -58,4 +58,6 @@ void SSD1351_DrawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color
 
 void SSD1351_SetFont(const uint8_t* font);
 
+void SSD1351_DrawChar(uint8_t x, uint8_t y, char c, uint16_t color, uint16_t bg);
+
 #endif // SSD1351_H
