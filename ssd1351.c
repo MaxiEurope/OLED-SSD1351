@@ -198,3 +198,38 @@ void SSD1351_DrawChar(uint8_t x, uint8_t y, char c, uint16_t color, uint16_t bg)
         }
     }
 }
+
+void SSD1351_DrawString(uint8_t x, uint8_t y, const char* str, uint16_t color, uint16_t bg) {
+    if (!str) {
+        return;
+    }
+
+    if (x >= SSD1351_WIDTH || y >= SSD1351_HEIGHT) {
+        return;
+    }
+
+    uint8_t original = x;
+
+    while (*str) {
+        char c = *str++;
+
+        if (c == '\n') {
+            y += current_font.height;
+            x = original;
+            continue;
+        }
+
+        uint16_t tmp = (c - current_font.start_char) << 2;
+        const uint8_t *char_table = current_font.data + 8 + tmp;
+        uint8_t char_width = *char_table;
+
+        if (x + char_width > SSD1351_WIDTH) {
+            x = original;
+            y += current_font.height;
+        }
+
+        SSD1351_DrawChar(x, y, c, color, bg);
+
+        x += char_width + 1;
+    }
+}
