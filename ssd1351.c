@@ -200,11 +200,7 @@ void SSD1351_DrawChar(uint8_t x, uint8_t y, char c, uint16_t color, uint16_t bg)
 }
 
 void SSD1351_DrawString(uint8_t x, uint8_t y, const char* str, uint16_t color, uint16_t bg) {
-    if (!str) {
-        return;
-    }
-
-    if (x >= SSD1351_WIDTH || y >= SSD1351_HEIGHT) {
+    if (!str || x >= SSD1351_WIDTH || y >= SSD1351_HEIGHT) {
         return;
     }
 
@@ -231,5 +227,69 @@ void SSD1351_DrawString(uint8_t x, uint8_t y, const char* str, uint16_t color, u
         SSD1351_DrawChar(x, y, c, color, bg);
 
         x += char_width + 1;
+    }
+}
+
+uint8_t SSD1351_GetStringWidth(const char* str) {
+    if (!str) {
+        return 0;
+    }
+
+    uint8_t width = 0;
+
+    while (*str) {
+        char c = *str++;
+
+        if (c < current_font.start_char || c > current_font.end_char) {
+            continue;
+        }
+
+        uint16_t tmp = (c - current_font.start_char) << 2;
+        const uint8_t *char_table = current_font.data + 8 + tmp;
+        width += *char_table + 1;
+    }
+
+    return width;
+}
+
+void SSD1351_DrawStringCentered(uint8_t y, const char* str, uint16_t color, uint16_t bg) {
+    if (!str || y >= SSD1351_HEIGHT) {
+        return;
+    }
+
+    uint8_t x = 0;
+    uint8_t str_width = SSD1351_GetStringWidth(str);
+
+    if (str_width <= SSD1351_WIDTH) {
+        x = (SSD1351_WIDTH - str_width) / 2;
+        SSD1351_DrawString(x, y, str, color, bg);
+    } else {
+        char buffer[64];
+        int buf_index = 0;
+
+        while (*str) {
+            buffer[buf_index++] = *str++;
+            buffer[buf_index] = '\0';
+
+            if (SSD1351_GetStringWidth(buffer) > SSD1351_WIDTH) {
+                buffer[--buf_index] = '\0';
+                x = (SSD1351_WIDTH - SSD1351_GetStringWidth(buffer)) / 2;
+                SSD1351_DrawString(x, y, buffer, color, bg);
+
+                y += current_font.height;
+                if (y >= SSD1351_HEIGHT) {
+                    break;
+                }
+
+                buffer[0] = *str++;
+                buf_index = 1;
+                buffer[buf_index] = '\0';
+            }
+        }
+
+        if (buf_index > 0) {
+            x = (SSD1351_WIDTH - SSD1351_GetStringWidth(buffer)) / 2;
+            SSD1351_DrawString(x, y, buffer, color, bg);
+        }
     }
 }

@@ -212,4 +212,8 @@ void SSD1351_DrawChar(uint8_t x, uint8_t y, char c, uint16_t color, uint16_t bg)
 
 void SSD1351_DrawString(uint8_t x, uint8_t y, const char* str, uint16_t color, uint16_t bg);
 
+uint8_t SSD1351_GetStringWidth(const char* str);
+
+void SSD1351_DrawStringCentered(uint8_t y, const char* str, uint16_t color, uint16_t bg);
+
 #endif // SSD1351_H
